@@ -32,7 +32,7 @@ int main(){
 
 	int iteration = 1;
 	// give shot after calculation
-	std::map<int, std::vector<std::pair<char,std::pair<int,int>>>> i;
+	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> i;
 	while(true){
 		for(int a=0; a<n; a++){
 			// point a:(1,1)
