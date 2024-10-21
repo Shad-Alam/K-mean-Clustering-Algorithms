@@ -32,8 +32,15 @@ int main(){
 
 	int iteration = 1;
 	// give shot after calculation
-	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> i;
+	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
+	bool port = false;
 	while(true){
+		if(port){
+			// check privous centroid == current centroid, it's our ending point
+			if(current==previous){
+				break;
+			}
+		}
 		for(int a=0; a<n; a++){
 			// point a:(1,1)
 			// cen-1:(1,1)
@@ -50,11 +57,40 @@ int main(){
 				iv.push_back({distance,b});
 			}
 			
-			sort(iv.begin(), iv.end());
+			sort(iv.begin(), iv.end(),[&](std::pair<double,int> x, std::pair<double,int> y){
+					return x.first<y.first;
+				});
 			// assign to centroid (closer to point a)
-			i[iv[0].second].push_back(dataSet[a]);
+			current[iv[0].second].push_back(dataSet[a]);
 		}
 		
+		if(!port){
+			previous = current;
+			
+			for(int a=0; a<k; a++){
+				for(int b=0; b<current[a].size(); b++){
+					char nextCh = current[a][b].first;
+					double n1 = current[a][b].second.first;
+					double n2 = current[a][b].second.second;
+					
+					std::cout << a << " -> " << nextCh << " " << n1 << " " << n2 << std::endl;
+				}
+			}
+			port = true;
+		}else{
+		
+			for(int a=0; a<k; a++){
+				for(int b=0; b<current[a].size(); b++){
+					char nextCh = current[a][b].first;
+					double n1 = current[a][b].second.first;
+					double n2 = current[a][b].second.second;
+					
+					std::cout << a << " -> " << nextCh << " " << n1 << " " << n2 << std::endl;
+				}
+			}
+		}
+		
+		std::cout << iteration << std::endl;
 		iteration++;
 		break;
 	}
