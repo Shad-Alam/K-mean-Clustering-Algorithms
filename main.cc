@@ -31,7 +31,7 @@ int main(){
 	
 
 	int iteration = 1;
-	
+	// give shot after calculation
 	std::map<int, std::vector<std::pair<char,std::pair<int,int>>>> i;
 	while(true){
 		for(int a=0; a<n; a++){
