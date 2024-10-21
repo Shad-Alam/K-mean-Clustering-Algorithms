@@ -1,8 +1,8 @@
 #include <iostream>
 
 int main(){
+	freopen("DATA_SET.txt", "r", stdin);
 	
-	std::cout << "Hello Dear" << std::endl;
 	
 	
 	return 0;
