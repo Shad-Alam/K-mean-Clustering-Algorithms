@@ -20,27 +20,21 @@ int main(){
 	}
 	
 	// Step-1: define cluster size
-	int k = 2;
+	int k = 4;
 	// Step-2: define number of centroid
 	int centroids = k, n = dataSet.size();
 	
 	// Step-3: choose randomly from dataset for centroid and store it
 	std::vector<std::pair<char,std::pair<double,double>>> centroid;
-	// for example i will choose  first k index for testing
 	
 	// if(k>n) give a error 
-	/*
 	for(int a=0; a<k; a++){
 		int m1 = dataSet[a].first, m2 = dataSet[a].second.first, m3 = dataSet[a].second.second;
-		std::cout << m1 << " " << m2 << " " << m3 << std::endl;
 		centroid.push_back({dataSet[a].first,{dataSet[a].second.first, dataSet[a].second.second}});
 	}
-	*/
-	centroid.push_back({'A',{1.0, 1.0}});
-	centroid.push_back({'D',{5.0, 7.0}});
 
 	int iteration = 1;
-	// give shot after calculation
+	// give a shot after calculation
 	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
 	
 	bool port = false, result = false;
@@ -49,13 +43,8 @@ int main(){
 		current.clear();
 		
 		for(int a=0; a<n; a++){
-			// point a:(1,1)
-			// cen-1:(1,1)
-			// 		dis = 0
-			// cen-2:(2,1)
-			//		dis = sqrt((x2-x1)^2+(y2-y1)^2)
 			double x1 = dataSet[a].second.first, y1 = dataSet[a].second.second;
-		//	std::cout << x1 << " -------- " << y1 << std::endl;
+
 			std::vector<std::pair<double,int>> iv;
 			for(int b=0; b<k; b++){
 				double x2 = centroid[b].second.first, y2 = centroid[b].second.second;
