@@ -20,7 +20,7 @@ int main(){
 	}
 	
 	// Step-1: define cluster size
-	int k = 4;
+	int k = 5;
 	// Step-2: define number of centroid
 	int centroids = k, n = dataSet.size();
 	
