@@ -37,8 +37,7 @@ int main(){
 	// give a shot after calculation
 	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
 	
-	bool port = false, result = false;
-	int trip = 10;
+	bool port = false;
 	while(true){		
 		current.clear();
 		
