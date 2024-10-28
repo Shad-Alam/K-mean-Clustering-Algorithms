@@ -36,8 +36,7 @@ int main(){
 	int iteration = 1;
 	// give a shot after calculation
 	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
-	
-	bool port = false;
+	bool port = false; 
 	while(true){		
 		current.clear();
 		
@@ -102,7 +101,6 @@ int main(){
 			// if only one dataset
 			// handle the error
 			if(previous==current){
-				result = true;
 				break;
 			}else{
 				previous = current;
@@ -113,21 +111,20 @@ int main(){
 	}
 	
 	{
+		std::cout << "\n Number of Iteration = " << iteration << std::endl << std::endl;
 		for(int a=0; a<k; a++){
-			std::cout << "Cluster " << a+1 << ": {";
+			printf(" Cluster %d:(%.2lf,%.2lf) {", a+1,centroid[a].second.first,centroid[a].second.second);
 			for(int b=0; b<current[a].size(); b++){
 				char p1 = current[a][b].first;
 				if(b==current[a].size()-1){
-					std::cout << p1;
+					printf("%c",p1);
 					break;
 				}
-				std::cout << p1 << ", ";
+				printf("%c, ",p1);
 			}
 				
-			std::cout << "}" << std::endl;
+			printf("}\n");
 		}
-		
-		std::cout << ">> " << iteration << std::endl;
 	}
 	
 	
