@@ -45,7 +45,7 @@ int main(){
 	
 	bool port = false, result = false;
 	int trip = 10;
-	while(trip--){		
+	while(true){		
 		current.clear();
 		
 		for(int a=0; a<n; a++){
@@ -84,6 +84,28 @@ int main(){
 			current[iv[0].second].push_back(dataSet[a]);
 		}
 		
+		{
+			centroid.clear();
+			// Step-6:: Update centroid
+			for(int a=0; a<k; a++){
+				
+				double sm = 0.0, ahq = 0.0;
+				for(int b=0; b<current[a].size(); b++){
+					char p1 = current[a][b].first;
+					double px = current[a][b].second.first;
+					double py = current[a][b].second.second;
+					
+					sm+=px, ahq+=py;
+				}
+				
+				double sz = (double) current[a].size();
+				sm/=sz, ahq/=sz;
+					
+				centroid.push_back({'~',{sm, ahq}});
+
+			}
+		}
+		
 		
 		if(!port){
 			previous = current;
@@ -98,27 +120,27 @@ int main(){
 				previous = current;
 			}
 		}
-		
-		// Step-6:: Update centroid
 				
 		iteration++;
 	}
 	
-	for(int a=0; a<k; a++){
-		std::cout << "Cluster " << a+1 << ": {";
-		for(int b=0; b<current[a].size(); b++){
-			char p1 = current[a][b].first;
-			if(b==current[a].size()-1){
-				std::cout << p1;
-				break;
+	{
+		for(int a=0; a<k; a++){
+			std::cout << "Cluster " << a+1 << ": {";
+			for(int b=0; b<current[a].size(); b++){
+				char p1 = current[a][b].first;
+				if(b==current[a].size()-1){
+					std::cout << p1;
+					break;
+				}
+				std::cout << p1 << ", ";
 			}
-			std::cout << p1 << ", ";
+				
+			std::cout << "}" << std::endl;
 		}
-			
-		std::cout << "}" << std::endl;
+		
+		std::cout << ">> " << iteration << std::endl;
 	}
-	
-	std::cout << ">> " << iteration << std::endl;
 	
 	
 	return 0;
