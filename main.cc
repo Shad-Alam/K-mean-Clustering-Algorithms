@@ -29,22 +29,23 @@ int main(){
 	// for example i will choose  first k index for testing
 	
 	// if(k>n) give a error 
+	/*
 	for(int a=0; a<k; a++){
 		int m1 = dataSet[a].first, m2 = dataSet[a].second.first, m3 = dataSet[a].second.second;
 		std::cout << m1 << " " << m2 << " " << m3 << std::endl;
 		centroid.push_back({dataSet[a].first,{dataSet[a].second.first, dataSet[a].second.second}});
 	}
-	
-	
+	*/
+	centroid.push_back({'A',{1.0, 1.0}});
+	centroid.push_back({'D',{5.0, 7.0}});
 
 	int iteration = 1;
 	// give shot after calculation
 	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
+	
 	bool port = false, result = false;
 	int trip = 10;
-	while(trip--){
-		// check privous centroid == current centroid, it's our ending point
-		
+	while(trip--){		
 		current.clear();
 		
 		for(int a=0; a<n; a++){
@@ -54,13 +55,12 @@ int main(){
 			// cen-2:(2,1)
 			//		dis = sqrt((x2-x1)^2+(y2-y1)^2)
 			double x1 = dataSet[a].second.first, y1 = dataSet[a].second.second;
-			std::cout << x1 << " -------- " << y1 << std::endl;
+		//	std::cout << x1 << " -------- " << y1 << std::endl;
 			std::vector<std::pair<double,int>> iv;
 			for(int b=0; b<k; b++){
 				double x2 = centroid[b].second.first, y2 = centroid[b].second.second;
-				//std::cout << "(x1,x2) == " << x1 << "," << x2 << " (y1,y2) == " << y1 << "," << y2 << std::endl;
-				//continue;
-				// Euclidean distance between two point
+			
+				// Step-4:: Euclidean distance between two point
 				std::pair<double,double> enx = mxmin(x1,x2);
 				std::pair<double,double> eny = mxmin(y1,y2);
 				double p1 = enx.first-enx.second, p2 = eny.first-eny.second;
@@ -68,21 +68,11 @@ int main(){
 				p1*=p1, p2*=p2;
 				// squre root
 				double distance = sqrt(p1+p2);
-				//std::cout << p1 << " " << p2 << " distance " << distance << std::endl;
 
 				iv.push_back({distance,b});
 			}
 			
-			//continue;
-			
-	
-			for(auto a : iv){
-				std::cout << a.first << " +++ " << a.second << std::endl;
-			}
-			
-			std::cout << "-------------------------" << std::endl;
-			
-			//continue;
+		
 			sort(iv.begin(), iv.end(),[&](std::pair<double,int> x, std::pair<double,int> y){
 					if(x.first==y.first){
 						return x.second<y.second;
@@ -90,7 +80,7 @@ int main(){
 					
 					return x.first<y.first;
 				});
-			// assign to centroid (closer to point a)
+			// Step-5:: assign to centroid (closer to point a)
 			current[iv[0].second].push_back(dataSet[a]);
 		}
 		
@@ -98,42 +88,34 @@ int main(){
 		if(!port){
 			previous = current;
 			port = true;
-			continue;
-		}
-		// if only one dataset
-		// handle the error
-		if(previous==current){
-			result = true;
-			break;
 		}else{
-			previous = current;
-		}
-			
-		/**
-		for(int a=0; a<k; a++){
-			for(int b=0; b<current[a].size(); b++){
-				char p1 = current[a][b].first;
-				std::cout << a << " == " << p1 << " ";
+			// if only one dataset
+			// handle the error
+			if(previous==current){
+				result = true;
+				break;
+			}else{
+				previous = current;
 			}
-			
-			std::cout << std::endl;
 		}
 		
-		std::cout << std::endl << std::endl;
-		*/
-		
-		std::cout << iteration << std::endl;
+		// Step-6:: Update centroid
+				
 		iteration++;
-		//break;
 	}
 	
 	for(int a=0; a<k; a++){
+		std::cout << "Cluster " << a+1 << ": {";
 		for(int b=0; b<current[a].size(); b++){
 			char p1 = current[a][b].first;
-			std::cout << a+1 << " == " << p1 << " ";
+			if(b==current[a].size()-1){
+				std::cout << p1;
+				break;
+			}
+			std::cout << p1 << ", ";
 		}
 			
-		std::cout << std::endl;
+		std::cout << "}" << std::endl;
 	}
 	
 	std::cout << ">> " << iteration << std::endl;
