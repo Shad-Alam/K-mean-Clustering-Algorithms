@@ -9,57 +9,63 @@ int main(){
 	
 	char ch; double n1, n2;
 
-	std::vector<std::pair<char,std::pair<double,double>>> dataSet;
+	std::vector<std::pair<char,std::vector<double>>> dataSet;
 	
-	while(std::cin >> ch >> n1 >> n2){
-		if(ch=='0' && n1==n2 && n1==0){
+	while(std::cin >> ch){
+		if(ch=='0'){
 			break;
 		}
 		
-		dataSet.push_back({ch,{n1,n2}});
+		std::vector<double> vip;
+		while(std::cin >> n1){
+			if(n1==0){
+				break;
+			}
+			vip.push_back(n1);
+		}
+		
+		dataSet.push_back({ch,vip});
 	}
 	
+
 	// Step-1: define cluster size
 	int k = 5;
 	// Step-2: define number of centroid
-	int centroids = k, n = dataSet.size();
+	int centroids = k, n = dataSet.size(), iteration = 1;
 	
 	// Step-3: choose randomly from dataset for centroid and store it
-	std::vector<std::pair<char,std::pair<double,double>>> centroid;
+	std::vector<std::pair<char,std::vector<double>>> centroid;
 	
 	// if(k>n) give a error 
 	for(int a=0; a<k; a++){
-		int m1 = dataSet[a].first, m2 = dataSet[a].second.first, m3 = dataSet[a].second.second;
-		centroid.push_back({dataSet[a].first,{dataSet[a].second.first, dataSet[a].second.second}});
-	}
-
-	int iteration = 1;
+		centroid.push_back({dataSet[a].first, dataSet[a].second});
+	}	
+	
 	// give a shot after calculation
-	std::map<int, std::vector<std::pair<char,std::pair<double,double>>>> current, previous;
+	std::map<int, std::vector<std::pair<char,std::vector<double>>>> current, previous;
 	bool port = false; 
 	while(true){		
 		current.clear();
 		
-		for(int a=0; a<n; a++){
-			double x1 = dataSet[a].second.first, y1 = dataSet[a].second.second;
-
+		for(int a=0; a<n; a++){ // vector on dataSet[a].second
+			std::vector<double> pointA = dataSet[a].second;
 			std::vector<std::pair<double,int>> iv;
 			for(int b=0; b<k; b++){
-				double x2 = centroid[b].second.first, y2 = centroid[b].second.second;
-			
-				// Step-4:: Euclidean distance between two point
-				std::pair<double,double> enx = mxmin(x1,x2);
-				std::pair<double,double> eny = mxmin(y1,y2);
-				double p1 = enx.first-enx.second, p2 = eny.first-eny.second;
-				// squre
-				p1*=p1, p2*=p2;
+				std::vector<double> pointB = dataSet[b].second;
+				// Step-4:: Euclidean distance method
+				double distance = 0.0, pointSum = 0;
+				for(int x=0, y=0; x<pointA.size(); x++){	
+					std::pair<double,double> enx = mxmin(pointA[x], pointB[y]);
+					double p1 = enx.first-enx.second;
+					// squre
+					p1*=p1; 
+					pointSum+=p1;
+				}
 				// squre root
-				double distance = sqrt(p1+p2);
-
+				distance = sqrt(pointSum);
 				iv.push_back({distance,b});
 			}
 			
-		
 			sort(iv.begin(), iv.end(),[&](std::pair<double,int> x, std::pair<double,int> y){
 					if(x.first==y.first){
 						return x.second<y.second;
@@ -75,31 +81,32 @@ int main(){
 			centroid.clear();
 			// Step-6:: Update centroid
 			for(int a=0; a<k; a++){
-				
-				double sm = 0.0, ahq = 0.0;
-				for(int b=0; b<current[a].size(); b++){
-					char p1 = current[a][b].first;
-					double px = current[a][b].second.first;
-					double py = current[a][b].second.second;
-					
-					sm+=px, ahq+=py;
+				int cz = current[a].size();
+				double sz = (double) cz;
+				std::vector<double> pointSum;
+				//double sm = 0.0, ahq = 0.0;
+				for(int b=0; b<cz; b++){
+					pointSum.assign(current[a][b].second.size(),0.0);
+					for(int c=0; c<current[a][b].second.size(); c++){
+						double px = current[a][b].second[c];
+						pointSum[c]+=px;
+					}
+
+					for(int c=0; c<current[a][b].second.size(); c++){
+						pointSum[c]/=sz;
+					}
 				}
 				
-				double sz = (double) current[a].size();
-				sm/=sz, ahq/=sz;
-					
-				centroid.push_back({'~',{sm, ahq}});
+				centroid.push_back({'~',pointSum});
 
 			}
 		}
-		
 		
 		if(!port){
 			previous = current;
 			port = true;
 		}else{
-			// if only one dataset
-			// handle the error
+	
 			if(previous==current){
 				break;
 			}else{
@@ -109,11 +116,19 @@ int main(){
 				
 		iteration++;
 	}
-	
+
 	{
 		std::cout << "\n Number of Iteration = " << iteration << std::endl << std::endl;
 		for(int a=0; a<k; a++){
-			printf(" Cluster %d:(%.2lf,%.2lf) {", a+1,centroid[a].second.first,centroid[a].second.second);
+			printf(" Cluster %d: Centroid(", a+1);//,centroid[a].second.first,centroid[a].second.second);
+			for(int b=0; b<centroid[a].second.size(); b++){
+				if(b==centroid[a].second.size()-1){
+					printf("%.2lf",centroid[a].second[b]);
+				}else{	
+					printf("%.2lf, ",centroid[a].second[b]);
+				}
+			}
+			printf(") {");
 			for(int b=0; b<current[a].size(); b++){
 				char p1 = current[a][b].first;
 				if(b==current[a].size()-1){
